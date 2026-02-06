@@ -23,3 +23,7 @@ streamlit
 # Utils
 openpyxl
 python-dateutil
+
+# Fix Streamlit protobuf crash
+protobuf==3.20.3
+grpcio<2
