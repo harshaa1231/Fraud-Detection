@@ -383,8 +383,13 @@ def train_ensemble_model(X_train, X_test, y_train, y_test, use_smote=False):
 
 
 def train_autoencoder(X_train, X_test, y_train, y_test, encoding_dim=None, epochs=50, threshold_percentile=95):
-    import tensorflow as tf
-    from tensorflow import keras
+    try:
+        import tensorflow as tf
+        from tensorflow import keras
+    except ImportError:
+        st.error("TensorFlow is not installed. Please install it with: pip install tensorflow")
+        st.info("Autoencoder functionality is only available with TensorFlow installed. Use other models instead.")
+        return {}
 
     tf.get_logger().setLevel('ERROR')
 
@@ -468,7 +473,10 @@ def save_models(model_name, results, scaler, feature_names, preprocessed_data=No
         safe_name = name.replace(" ", "_").replace("(", "").replace(")", "").replace("+", "plus")
 
         if hasattr(model, 'save'):
-            model.save(os.path.join(save_dir, f"{safe_name}_model.keras"))
+            try:
+                model.save(os.path.join(save_dir, f"{safe_name}_model.keras"))
+            except Exception as e:
+                st.warning(f"Could not save {name} as Keras model: {str(e)}")
         else:
             joblib.dump(model, os.path.join(save_dir, f"{safe_name}_model.joblib"))
 
@@ -542,8 +550,12 @@ def load_model_from_dir(dir_path, metadata):
         joblib_path = os.path.join(dir_path, f"{safe_name}_model.joblib")
 
         if os.path.exists(keras_path):
-            from tensorflow import keras
-            models[name] = keras.models.load_model(keras_path)
+            try:
+                from tensorflow import keras
+                models[name] = keras.models.load_model(keras_path)
+            except ImportError:
+                st.warning(f"Cannot load {name} (requires TensorFlow). Skipping this model.")
+                continue
         elif os.path.exists(joblib_path):
             models[name] = joblib.load(joblib_path)
 
@@ -1088,6 +1100,15 @@ def main():
     # ---- Tab 5: Autoencoder ----
     with tabs[4]:
         st.header("Autoencoder Anomaly Detection")
+        
+        # Check if TensorFlow is available
+        try:
+            import tensorflow
+            tf_available = True
+        except ImportError:
+            tf_available = False
+            st.warning("⚠️ TensorFlow is not installed. Autoencoder functionality is unavailable. Please install TensorFlow: `pip install tensorflow`")
+        
         st.markdown("Deep learning-based anomaly detection using neural network autoencoders")
 
         st.markdown("""
@@ -1103,7 +1124,7 @@ Fraudulent transactions produce higher reconstruction errors, making them detect
         with col3:
             ae_encoding = st.slider("Encoding Dimension", 2, 20, 4, key="ae_encoding")
 
-        if st.button("Train Autoencoder", type="primary", key="train_autoencoder"):
+        if st.button("Train Autoencoder", type="primary", key="train_autoencoder", disabled=not tf_available):
             if 'preprocessed_data' not in st.session_state:
                 with st.spinner("Preprocessing data..."):
                     result = preprocess_data(df, target_column)
