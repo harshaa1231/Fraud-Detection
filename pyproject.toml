@@ -7,3 +7,6 @@ name = "fraud-detection"
 version = "1.0.0"
 description = "Fraud Detection & Anomaly Detection System"
 requires-python = ">=3.8"
+
+[tool.uv]
+package = false
