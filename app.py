@@ -716,11 +716,11 @@ def plot_model_comparison(supervised_results, anomaly_results, ensemble_results=
         height=500,
         hovermode='x unified'
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     st.subheader("Detailed Metrics")
     styled_df = metrics_df.style.background_gradient(cmap='RdYlGn', axis=None).format("{:.4f}")
-    st.dataframe(styled_df, use_container_width=True)
+    st.dataframe(styled_df, width='stretch')
 
     return metrics_df
 
@@ -742,7 +742,7 @@ def plot_confusion_matrices(results, model_type):
                 title=f'{name}'
             )
             fig.update_layout(height=300)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
 
 def plot_feature_importance(supervised_results, feature_names):
@@ -763,7 +763,7 @@ def plot_feature_importance(supervised_results, feature_names):
                 labels={'Importance': 'Importance Score', 'Feature': 'Feature Name'}
             )
             fig.update_layout(height=400)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
 
 def plot_roc_curves(results, y_test):
@@ -797,7 +797,7 @@ def plot_roc_curves(results, y_test):
         height=500,
         hovermode='x unified'
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 
 def plot_anomaly_scores(anomaly_results, y_test):
@@ -813,7 +813,7 @@ def plot_anomaly_scores(anomaly_results, y_test):
             barmode='overlay',
             height=400
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
 
 def main():
@@ -889,7 +889,7 @@ def main():
             st.metric("Features", len(df.columns) - 1)
 
         st.subheader("Dataset Preview")
-        st.dataframe(df.head(100), use_container_width=True)
+        st.dataframe(df.head(100), width='stretch')
 
         st.subheader("Class Distribution")
         class_counts = df[target_column].value_counts()
@@ -903,10 +903,10 @@ def main():
             )
         ])
         fig.update_layout(title='Transaction Distribution', xaxis_title='Class', yaxis_title='Count', height=400)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
         st.subheader("Feature Statistics")
-        st.dataframe(df.describe(), use_container_width=True)
+        st.dataframe(df.describe(), width='stretch')
 
         st.subheader("Feature Correlations")
         numeric_df = df.select_dtypes(include=[np.number])
@@ -914,13 +914,13 @@ def main():
             corr = numeric_df.corr()
             fig = px.imshow(corr, text_auto='.2f', color_continuous_scale='RdBu_r', title='Feature Correlation Matrix')
             fig.update_layout(height=500)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         else:
             st.info(f"Correlation matrix skipped for {len(numeric_df.columns)} features. Showing top correlations with target instead.")
             if target_column in numeric_df.columns:
                 target_corr = numeric_df.corr()[target_column].drop(target_column).abs().sort_values(ascending=False).head(15)
                 fig = px.bar(x=target_corr.index, y=target_corr.values, labels={'x': 'Feature', 'y': 'Correlation with Target'}, title='Top 15 Feature Correlations with Target')
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
 
     # ---- Tab 2: Supervised Models ----
     with tabs[1]:
@@ -962,7 +962,7 @@ def main():
                 for name, res in results.items()
             }).T
             styled_df = metrics_df.style.background_gradient(cmap='RdYlGn', axis=None).format("{:.4f}")
-            st.dataframe(styled_df, use_container_width=True)
+            st.dataframe(styled_df, width='stretch')
 
             st.subheader("ROC Curves")
             plot_roc_curves(results, y_test)
@@ -1015,7 +1015,7 @@ def main():
                 for name, res in results.items()
             }).T
             styled_df = metrics_df.style.background_gradient(cmap='RdYlGn', axis=None).format("{:.4f}")
-            st.dataframe(styled_df, use_container_width=True)
+            st.dataframe(styled_df, width='stretch')
 
             st.subheader("Confusion Matrices")
             plot_confusion_matrices(results, "Anomaly Detection")
@@ -1075,7 +1075,7 @@ def main():
                 for name, res in results.items()
             }).T
             styled_df = metrics_df.style.background_gradient(cmap='RdYlGn', axis=None).format("{:.4f}")
-            st.dataframe(styled_df, use_container_width=True)
+            st.dataframe(styled_df, width='stretch')
 
             st.subheader("Confusion Matrices")
             plot_confusion_matrices(results, "Ensemble")
@@ -1148,7 +1148,7 @@ Fraudulent transactions produce higher reconstruction errors, making them detect
                 title='Autoencoder Confusion Matrix'
             )
             fig.update_layout(height=350)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
             if 'history' in ae_res:
                 st.subheader("Training History")
@@ -1158,7 +1158,7 @@ Fraudulent transactions produce higher reconstruction errors, making them detect
                 if 'val_loss' in history:
                     fig.add_trace(go.Scatter(y=history['val_loss'], name='Validation Loss', mode='lines'))
                 fig.update_layout(title='Autoencoder Training Loss', xaxis_title='Epoch', yaxis_title='MSE Loss', height=400)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
 
             st.subheader("Reconstruction Error Distribution")
             scores = ae_res['anomaly_scores']
@@ -1172,7 +1172,7 @@ Fraudulent transactions produce higher reconstruction errors, making them detect
                 yaxis_title='Count',
                 barmode='overlay', height=400
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
     # ---- Tab 6: Model Comparison ----
     with tabs[5]:
@@ -1294,7 +1294,7 @@ Fraudulent transactions produce higher reconstruction errors, making them detect
 
                     if meta['metrics']:
                         metrics_df = pd.DataFrame(meta['metrics']).T
-                        st.dataframe(metrics_df.style.background_gradient(cmap='RdYlGn', axis=None).format("{:.4f}"), use_container_width=True)
+                        st.dataframe(metrics_df.style.background_gradient(cmap='RdYlGn', axis=None).format("{:.4f}"), width='stretch')
 
                     col1, col2 = st.columns(2)
                     with col1:
@@ -1337,6 +1337,8 @@ Fraudulent transactions produce higher reconstruction errors, making them detect
         elif has_loaded:
             feature_names = st.session_state['loaded_models']['feature_names']
             scaler = st.session_state['loaded_models']['scaler']
+        else:
+            return
 
         st.subheader("Enter Transaction Details")
 
