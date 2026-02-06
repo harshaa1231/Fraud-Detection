@@ -205,7 +205,3 @@ The app automatically adapts based on your data:
 - **Data Visualization**: Radar charts, gauge meters, confusion matrix heatmaps, ROC curves, scatter plots, feature importance maps
 
 ---
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
