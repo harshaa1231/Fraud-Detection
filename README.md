@@ -88,3 +88,45 @@ streamlit run app.py --server.port 5000
 - 2026-02-06: Added feature correlation matrix visualization
 - 2026-02-06: Added best model recommendation in comparison tab
 - 2026-02-06: Expanded dataset info with additional datasets and metadata
+## Deployment on Streamlit Cloud
+
+### Prerequisites
+- GitHub account with this repository
+- Streamlit Cloud account (free tier available at https://streamlit.io/cloud)
+
+### Deployment Steps
+
+1. **Go to Streamlit Cloud**: Visit https://share.streamlit.io/
+
+2. **Connect your GitHub repository**:
+   - Click "Deploy an app"
+   - Select "GitHub" as the source
+   - Authorize Streamlit to access your repositories
+   - Select `harshaa1231/Fraud-Detection` repository
+
+3. **Configure deployment**:
+   - **Repository**: `harshaa1231/Fraud-Detection`
+   - **Branch**: `main`
+   - **Main file path**: `app.py`
+
+4. **Deploy**:
+   - Click "Deploy"
+   - Wait for the app to build and start
+   - Once complete, you'll get a public URL like `https://fraud-detection-xxxx.streamlit.app`
+
+### Files for Deployment
+- `app.py` — Main Streamlit application
+- `requirements.txt` — Python package dependencies
+- `.streamlit/config.toml` — Streamlit configuration
+- `pyproject.toml` — Project metadata
+
+### Performance Tips for Streamlit Cloud
+- The app caches data exploration results using `@st.cache_data`
+- Large model training may take 30-60 seconds on first run
+- Use the "Use Sample Dataset" option for quick testing (default) rather than uploading large CSV files
+- Downloaded reports are generated on-demand (CPU intensive depending on model count)
+
+### Troubleshooting Deployment
+- **Module not found**: Ensure all dependencies are in `requirements.txt`
+- **Memory issues**: TensorFlow can be memory-intensive; consider using smaller datasets or fewer epochs
+- **Timeout errors**: First-time loads may take longer; subsequent runs are faster due to caching
